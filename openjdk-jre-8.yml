@@ -1,8 +1,9 @@
 ---
-- name: azul zulu 8
+- name: openjdk jre 8
   hosts: 127.0.0.1
 
   roles:
     - role: java
-      java_provider: azul
+      java_provider: openjdk
       java_version: 8
+      java_type: jre

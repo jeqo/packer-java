@@ -1,5 +1,5 @@
 {
-  "name": "azul-zulu-7",
+  "name": "openjdk-jdk-7",
   "os": "centos7",
   "base_image_name": "centos7-ansible",
   "aws_source_ami": "ami-d291b4b8",

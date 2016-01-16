@@ -1,8 +1,9 @@
 ---
-- name: oracle java 8 (8.66)
+- name: oracle jre 7
   hosts: 127.0.0.1
 
   roles:
     - role: java
-      java_provider: azul
+      java_provider: oracle
       java_version: 7
+      java_type: jre
