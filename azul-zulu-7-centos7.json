@@ -1,15 +1,20 @@
 {
-  "description": "oracle java 8 packer template",
+  "description": "azul zulu 8 packer template",
 
   "variables": {
-    "name": "oracle-java-8",
-    "base_name": "oracle-linux-6",
+    "name": "azul-zulu-8-centos7",
+    "base_name": "centos7-ansible",
 
     "user_home": "{{env `HOME`}}",
 
     "docker_user": "jeqo",
+
     "atlas_user": "jeqo",
     "atlas_token": "{{env `ATLAS_TOKEN`}}",
+
+    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `ÀWS_SECRET_KEY`}}",
+    "aws_source_ami": "ami-d291b4b8",
 
     "version": "8.66",
     "timestamp": "{{isotime \"20060102150405\"}}"
@@ -37,6 +42,20 @@
 
     "image": "{{user `docker_user`}}/{{user `base_name`}}",
     "commit": "true"
+  },{
+    "name": "aws",
+    "type": "amazon-ebs",
+
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+
+    "region": "us-east-1",
+    "source_ami": "{{user `aws_source_ami`}}",
+    "instance_type": "t2.micro",
+    "ssh_username": "centos",
+    "ami_name": "{{user `name`}} {{timestamp}}",
+
+    "ssh_pty" : true
   }],
 
   "provisioners": [{
@@ -73,6 +92,46 @@
 
   "post-processors": [
     [{
+      "type": "atlas",
+
+      "only": ["aws"],
+
+      "token": "{{user `atlas_token`}}",
+
+      "artifact": "{{user `atlas_user`}}/{{user `name`}}",
+      "artifact_type": "amazon.image",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "version": "{{user `version`}}.{{user `timestamp`}}"
+      }
+    }, {
+      "type": "atlas",
+
+      "only": ["docker"],
+
+      "token": "{{user `atlas_token`}}",
+
+      "artifact": "{{user `atlas_user`}}/{{user `name`}}",
+      "artifact_type": "docker.image",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "version": "{{user `version`}}.{{user `timestamp`}}",
+        "repository": "{{user `docker_user`}}/{{user `name`}}"
+      }
+    }, {
+      "type": "atlas",
+
+      "only": ["virtualbox"],
+
+      "token": "{{user `atlas_token`}}",
+
+      "artifact": "{{user `atlas_user`}}/{{user `name`}}",
+      "artifact_type": "virtualbox.image",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "version": "{{user `version`}}.{{user `timestamp`}}"
+      }
+    }], [{
       "type": "vagrant",
 
       "only": ["virtualbox"],
@@ -86,13 +145,13 @@
       "only": ["virtualbox"],
 
       "token": "{{user `atlas_token`}}",
+
       "artifact": "{{user `atlas_user`}}/{{user `name`}}",
       "artifact_type": "vagrant.box",
       "metadata": {
         "created_at": "{{timestamp}}",
         "provider": "virtualbox",
-        "version": "{{user `version`}}.{{user `timestamp`}}",
-        "os": "oracle-linux-6"
+        "version": "{{user `version`}}.{{user `timestamp`}}"
       }
     }], [{
       "type": "docker-tag",
@@ -100,15 +159,7 @@
       "only": ["docker"],
 
       "repository": "{{user `docker_user`}}/{{user `name`}}",
-      "tag": "{{user `version`}}.ol6.{{user `timestamp`}}"
-    },{
-      "type": "docker-tag",
-
-      "only": ["docker"],
-
-      "repository": "{{user `docker_user`}}/{{user `name`}}",
-      "tag": "{{user `version`}}.ol6",
-      "force": true
+      "tag": "{{user `version`}}.{{user `timestamp`}}"
     },{
       "type": "docker-tag",
 
@@ -130,5 +181,15 @@
 
       "only": ["docker"]
     }]
-  ]
+  ],
+
+  "push": {
+    "name": "{{user `atlas_user`}}/{{user `name`}}",
+    "token": "{{user `atlas_token`}}",
+    "include": [
+      "http/",
+      "scripts/"
+    ],
+    "vcs": false
+  }
 }
