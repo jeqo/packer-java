@@ -86,6 +86,9 @@
     "override": {
       "virtualbox": {
         "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+      },
+      "aws": {
+        "execute_command": "{{.Vars}} sudo -S -E bash '{{.Path}}'"
       }
     }
   }],
