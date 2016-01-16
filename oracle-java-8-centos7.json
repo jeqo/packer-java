@@ -60,7 +60,7 @@
 
   "provisioners": [{
     "type": "ansible-local",
-    "playbook_file": "{{user `name`}}.yml",
+    "playbook_file": "oracle-java-8.yml",
     "role_paths": ["{{template_dir}}/roles/java"],
     "override": {
       "virtualbox": {
