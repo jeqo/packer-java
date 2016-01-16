@@ -1,6 +1,7 @@
 {
   "name": "openjdk-jre-8",
   "os": "centos7",
+  "image_name": "openjdk-jre-8-centos7",
   "base_image_name": "centos7-ansible",
   "aws_source_ami": "ami-d291b4b8",
   "version": "8.65"

@@ -2,8 +2,6 @@
   "description": "java packer template",
 
   "variables": {
-    "image_name": "{{user `name`}}-{{user `os`}}",
-
     "user_home": "{{env `HOME`}}",
 
     "docker_user": "jeqo",
