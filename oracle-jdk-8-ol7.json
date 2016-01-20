@@ -1,0 +1,7 @@
+{
+  "name": "oracle-jdk-8",
+  "os": "ol7",
+  "image_name": "oracle-jdk-7-ol7",
+  "base_image_name": "ol7-ansible",
+  "version": "8.66"
+}
