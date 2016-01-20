@@ -2,6 +2,10 @@
   "description": "java packer template",
 
   "variables": {
+    "name": "",
+    "os": "",
+    "image_name": "",
+    "base_image_name": "",
     "user_home": "{{env `HOME`}}",
 
     "docker_user": "jeqo",
@@ -11,7 +15,9 @@
 
     "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
     "aws_secret_key": "{{env `ÀWS_SECRET_KEY`}}",
+    "aws_source_ami": "ami-d291b4b8",
 
+    "version": "",
     "timestamp": "{{isotime \"20060102150405\"}}"
   },
 
