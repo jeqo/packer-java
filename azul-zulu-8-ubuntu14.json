@@ -1,0 +1,19 @@
+{
+  "image_name": "azul-zulu-8-ubuntu14",
+
+  "virtualbox_source_path": "/home/jeqo/.vagrant.d/boxes/jeqo-VAGRANTSLASH-ansible-ubuntu14/14.04.20160225164844/virtualbox/box.ovf",
+  "virtualbox_output_directory": "build",
+
+  "docker_user": "jeqo",
+  "docker_source_image": "jeqo/ansible-ubuntu14",
+
+  "aws_source_image": "",
+
+  "ansible_playbook_file": "azul-zulu-8.yml",
+
+  "atlas_user": "jeqo",
+
+  "vagrant_output_path": "build/azul-zulu-8-ubuntu14.box",
+
+  "version": "8.66"
+}

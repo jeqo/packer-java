@@ -2,20 +2,24 @@
   "description": "java packer template",
 
   "variables": {
-    "name": "",
-    "os": "",
     "image_name": "",
-    "base_image_name": "",
-    "user_home": "{{env `HOME`}}",
+
+    "virtualbox_source_path": "",
+    "virtualbox_output_directory": "",
 
     "docker_user": "jeqo",
+    "docker_source_image": "",
+
+    "aws_source_image": "",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `ÀWS_SECRET_KEY`}}",
+
+    "ansible_playbook_file": "",
 
     "atlas_user": "jeqo",
     "atlas_token": "{{env `ATLAS_TOKEN`}}",
 
-    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
-    "aws_secret_key": "{{env `ÀWS_SECRET_KEY`}}",
-    "aws_source_ami": "",
+    "vagrant_output_path": "",
 
     "version": "",
     "timestamp": "{{isotime \"20060102150405\"}}"
@@ -26,8 +30,8 @@
     "type": "virtualbox-ovf",
 
     "vm_name": "{{user `image_name`}}",
-    "output_directory": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `image_name`}}",
-    "source_path": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `base_image_name`}}/{{user `base_image_name`}}.ovf",
+    "output_directory": "{{user `virtualbox_output_directory`}}",
+    "source_path": "{{user `virtualbox_source_path`}}",
 
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
@@ -41,7 +45,7 @@
   },{
     "type": "docker",
 
-    "image": "{{user `docker_user`}}/{{user `base_image_name`}}",
+    "image": "{{user `docker_source_image`}}",
     "commit": "true"
   },{
     "name": "aws",
@@ -51,7 +55,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
 
     "region": "us-east-1",
-    "source_ami": "{{user `aws_source_ami`}}",
+    "source_ami": "{{user `aws_source_image`}}",
     "instance_type": "t2.micro",
     "ssh_username": "centos",
     "ami_name": "{{user `image_name`}} {{timestamp}}",
@@ -61,7 +65,7 @@
 
   "provisioners": [{
     "type": "ansible-local",
-    "playbook_file": "{{user `name`}}.yml",
+    "playbook_file": "{{user `ansible_playbook_file`}}",
     "role_paths": ["{{template_dir}}/roles/java"],
     "override": {
       "virtualbox": {
@@ -122,26 +126,13 @@
         "version": "{{user `version`}}.{{user `timestamp`}}",
         "repository": "{{user `docker_user`}}/{{user `image_name`}}"
       }
-    }, {
-      "type": "atlas",
-
-      "only": ["virtualbox"],
-
-      "token": "{{user `atlas_token`}}",
-
-      "artifact": "{{user `atlas_user`}}/{{user `image_name`}}",
-      "artifact_type": "virtualbox.image",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "version": "{{user `version`}}.{{user `timestamp`}}"
-      }
     }], [{
       "type": "vagrant",
 
       "only": ["virtualbox"],
 
-      "output": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `image_name`}}/{{user `image_name`}}.box",
-      "compression_level": 9,
+      "output": "{{user `vagrant_output_path`}}",
+      "compression_level": 6,
       "keep_input_artifact": true
     }, {
       "type": "atlas",
@@ -185,15 +176,5 @@
 
       "only": ["docker"]
     }]
-  ],
-
-  "push": {
-    "name": "{{user `atlas_user`}}/{{user `image_name`}}",
-    "token": "{{user `atlas_token`}}",
-    "include": [
-      "http/",
-      "scripts/"
-    ],
-    "vcs": false
-  }
+  ]
 }
